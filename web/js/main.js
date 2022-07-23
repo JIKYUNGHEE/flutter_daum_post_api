@@ -1,3 +1,3 @@
 define(function (require) {
-  window.dhive = require("./scripts/dhive");
+  window.dhive = require("./scripts/messageHandler");
 });
