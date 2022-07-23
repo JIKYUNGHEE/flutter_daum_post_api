@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:js' as js;
-
-import 'package:js/js.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:remedi_kopo/remedi_kopo.dart';
+
+import 'package:http/http.dart' as http;
+
+import 'package:flutter_daum_post_api/messageHandler.dart';
 
 void main() {
   runApp(const MyApp());
@@ -65,25 +67,31 @@ class _MyHomePageState extends State<MyHomePage> {
     if (kIsWeb) {
       print("📗, Platform is web");
 
-      String htmlFilePath = 'assets/kakao_postcode.html';
-      String fileHtmlContents = await rootBundle.loadString(htmlFilePath);
+      //[로컬 html 파일 이용 방법]
+      // String htmlFilePath = 'assets/kakao_postcode.html';
+      // String fileHtmlContents = await rootBundle.loadString(htmlFilePath);
       // print("📗, fileHtmlContents is ${fileHtmlContents}");
-
-      Uri uri = Uri.dataFromString(
-          fileHtmlContents,
-          mimeType: 'text/html',
-          encoding: Encoding.getByName('utf-8'));
+      // Uri uri = Uri.dataFromString(
+      //     fileHtmlContents,
+      //     mimeType: 'text/html',
+      //     encoding: Encoding.getByName('utf-8'));
       // uri.path
       // print("📗, [uri] path is ${uri.path}, ${uri.origin}");
 
+      //js.context.callMethod("write", [uri.data]);
+
       js.context.callMethod('open', [
-        "http://plinic.cafe24app.com/api/daumFlutterPost",
+        "http://plinic.cafe24app.com/api/daumFlutterPost", //TODO. 로컬에 있는 html 파일 불러와야 함!!!! > 여기 코드에는 messageHandler.js 가 없으므로
         "주소검색",
         "width = 500, height = 500, top = 100, left = 200, location = no"
       ]);
 
-      //js.context.callMethod("write", [uri.data]);
-
+      //build query
+      final options = AddressOptions(
+        addressZoneCode: '',
+        addressBasic: '',
+        addressDetail: ''
+      );
     } else { //remedi_kopo 플러그인이 ANDROID 와 IOS 만 지원
     print("📗, Platform is not web");
     KopoModel model = await Navigator.push(
@@ -181,5 +189,34 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.search),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+}
+
+// 서버 API 통신 예제....인 듯.....
+class SearchAddressApiProvider {
+  final String BASE_URL = "http://plinic.cafe24app.com/api/daumFlutterPost";
+  final String POSTS_FETCH_API = "";
+  final String POSTS_FETCH_METHOD = "";
+
+  http.Client httpClient = http.Client();
+
+  SearchAddressApiProvider();
+
+  fetchPosts() async {
+    final body =
+        '{"jsonrpc":"2.0", "method":"$POSTS_FETCH_API.$POSTS_FETCH_METHOD"}';
+
+    print('📗, fetchPosts. body: $body');
+
+    var url = Uri.parse(BASE_URL);
+
+    final response = await httpClient.post(url, body: body);
+    if (response.statusCode == 200) {
+      // convert it to model
+      final parsedJson = json.decode(response.body);
+      print("📗, object");
+    } else {
+      throw Exception('error fetching posts');
+    }
   }
 }
