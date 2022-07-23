@@ -47,7 +47,7 @@ android {
         applicationId "com.example.flutter_daum_post_api"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 19    //flutter.minSdkVersion - 웹뷰 사용 가능 최소 버전
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
