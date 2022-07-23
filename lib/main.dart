@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:js' as js;
 
+import 'package:js/js.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:remedi_kopo/remedi_kopo.dart';
 
 void main() {
@@ -58,16 +62,41 @@ class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _addressDetailThreeController = TextEditingController();
 
   void _searchAddress() async {
+    if (kIsWeb) {
+      print("📗, Platform is web");
+
+      String htmlFilePath = 'assets/kakao_postcode.html';
+      String fileHtmlContents = await rootBundle.loadString(htmlFilePath);
+      // print("📗, fileHtmlContents is ${fileHtmlContents}");
+
+      Uri uri = Uri.dataFromString(
+          fileHtmlContents,
+          mimeType: 'text/html',
+          encoding: Encoding.getByName('utf-8'));
+      // uri.path
+      // print("📗, [uri] path is ${uri.path}, ${uri.origin}");
+
+      js.context.callMethod('open', [
+        "http://plinic.cafe24app.com/api/daumFlutterPost",
+        "주소검색",
+        "width = 500, height = 500, top = 100, left = 200, location = no"
+      ]);
+
+      //js.context.callMethod("write", [uri.data]);
+
+    } else { //remedi_kopo 플러그인이 ANDROID 와 IOS 만 지원
+    print("📗, Platform is not web");
     KopoModel model = await Navigator.push(
-      context,
-      CupertinoPageRoute(
-        builder: (context) => RemediKopo(),
-      ),
+    context,
+    CupertinoPageRoute(
+    builder: (context) => RemediKopo(),
+    ),
     );
 
     _addressZoneCodeController.text = model.zonecode!;
     _addressBasicController.text = '${model.address} ${model.buildingName}';
     _addressDetailThreeController.text = '';
+    }
   }
 
   @override
