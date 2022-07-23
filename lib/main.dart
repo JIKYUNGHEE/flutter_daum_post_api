@@ -1,4 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:remedi_kopo/remedi_kopo.dart';
 
 void main() {
   runApp(const MyApp());
@@ -48,18 +53,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  TextEditingController _AddressZoneCodeController = TextEditingController();
-  TextEditingController _AddressBasicController = TextEditingController();
-  TextEditingController _AddressDetailThreeController = TextEditingController();
+  final TextEditingController _addressZoneCodeController = TextEditingController();
+  final TextEditingController _addressBasicController = TextEditingController();
+  final TextEditingController _addressDetailThreeController = TextEditingController();
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-    });
+  void _searchAddress() async {
+    KopoModel model = await Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => RemediKopo(),
+      ),
+    );
+
+    _addressZoneCodeController.text = model.zonecode!;
+    _addressBasicController.text = '${model.address} ${model.buildingName}';
+    _addressDetailThreeController.text = '';
   }
 
   @override
@@ -105,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
               decoration: InputDecoration(
                 isDense: false,
               ),
-              controller: _AddressZoneCodeController,
+              controller: _addressZoneCodeController,
               style: TextStyle(fontSize: 20),
             ),
             const Padding(padding: EdgeInsets.only(top: 20)),
@@ -117,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
               decoration: InputDecoration(
                 isDense: false,
               ),
-              controller: _AddressBasicController,
+              controller: _addressBasicController,
               style: TextStyle(fontSize: 20),
             ),
             const Padding(padding: EdgeInsets.only(top: 20)),
@@ -129,22 +137,20 @@ class _MyHomePageState extends State<MyHomePage> {
               decoration: InputDecoration(
                 isDense: false,
               ),
-              controller: _AddressDetailThreeController,
+              controller: _addressDetailThreeController,
               style: TextStyle(fontSize: 20),
             ),
             const Padding(padding: EdgeInsets.only(top: 200)),
             const Text("아래 FloatingButton 을 눌러 주소를 검색하세요. ⬇️⬇️⬇️",
                 style: TextStyle(fontSize: 15, color: Colors.blueGrey)),
-
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _searchAddress,
         tooltip: '주소찾기',
         child: const Icon(Icons.search),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
-
