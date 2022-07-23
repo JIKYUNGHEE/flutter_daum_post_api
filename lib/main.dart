@@ -122,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: TextStyle(fontSize: 15, color: Colors.blueGrey)),
             TextFormField(
               enabled: false,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 isDense: false,
               ),
               controller: _addressBasicController,
@@ -134,11 +134,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: TextStyle(fontSize: 15, color: Colors.blueGrey)),
             TextFormField(
               enabled: false,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 isDense: false,
               ),
               controller: _addressDetailThreeController,
-              style: TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 20),
             ),
             const Padding(padding: EdgeInsets.only(top: 200)),
             const Text("아래 FloatingButton 을 눌러 주소를 검색하세요. ⬇️⬇️⬇️",
