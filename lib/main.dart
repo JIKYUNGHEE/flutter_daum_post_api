@@ -61,9 +61,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final TextEditingController _addressZoneCodeController = TextEditingController();
+  final TextEditingController _addressZoneCodeController =
+      TextEditingController();
   final TextEditingController _addressBasicController = TextEditingController();
-  final TextEditingController _addressDetailThreeController = TextEditingController();
+  final TextEditingController _addressDetailThreeController =
+      TextEditingController();
 
   void _searchAddress() async {
     if (kIsWeb) {
@@ -74,11 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
       String fileHtmlContents = await rootBundle.loadString(htmlFilePath);
       // print("📗, fileHtmlContents is ${fileHtmlContents}");
 
-      Uri uri = Uri.dataFromString(
-          fileHtmlContents,
-          mimeType: 'text/html',
-          encoding: Encoding.getByName('utf-8')
-      );
+      Uri uri = Uri.dataFromString(fileHtmlContents,
+          mimeType: 'text/html', encoding: Encoding.getByName('utf-8'));
 
       print("📗, [uri] path is ${uri.path}, ${uri.origin}");
 
@@ -91,10 +90,11 @@ class _MyHomePageState extends State<MyHomePage> {
         "주소 검색",
         "width = 500, height = 500, top = 100, left = 200, location = no"
       ]);
-      
+
       // html.window.open(uri.path, "주소 찾기");
-      
-    } else { //remedi_kopo 플러그인이 ANDROID 와 IOS 만 지원
+
+    } else {
+      //remedi_kopo 플러그인이 ANDROID 와 IOS 만 지원
       print("📗, Platform is not web");
       KopoModel model = await Navigator.push(
         context,

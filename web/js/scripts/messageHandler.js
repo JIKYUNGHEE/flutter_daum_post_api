@@ -1,9 +1,9 @@
-    var postData;
+var postData;
 
-    function setPostData(data) {
-        postData = data;
-    }
+function setPostData(data) {
+    postData = data;
+}
 
-    function postMessage() {
-      return JSON.stringify(postData)
-    }
+function postMessage() {
+    return JSON.stringify(postData)
+}
