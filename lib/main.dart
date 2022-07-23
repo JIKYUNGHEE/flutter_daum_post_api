@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: '다음 주소 API Demo'),
     );
   }
 }
@@ -48,7 +48,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  TextEditingController _AddressZoneCodeController = TextEditingController();
+  TextEditingController _AddressBasicController = TextEditingController();
+  TextEditingController _AddressDetailThreeController = TextEditingController();
 
   void _incrementCounter() {
     setState(() {
@@ -57,7 +59,6 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      _counter++;
     });
   }
 
@@ -93,23 +94,57 @@ class _MyHomePageState extends State<MyHomePage> {
           // center the children vertically; the main axis here is the vertical
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+            const Padding(padding: EdgeInsets.only(top: 50)),
+            const Padding(padding: EdgeInsets.only(top: 50)),
+            const Text('우편번호',
+                style: TextStyle(fontSize: 15, color: Colors.blueGrey)),
+            TextFormField(
+              enabled: false,
+              decoration: InputDecoration(
+                isDense: false,
+              ),
+              controller: _AddressZoneCodeController,
+              style: TextStyle(fontSize: 20),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            const Padding(padding: EdgeInsets.only(top: 20)),
+            const Padding(padding: EdgeInsets.only(top: 20)),
+            const Text('기본주소',
+                style: TextStyle(fontSize: 15, color: Colors.blueGrey)),
+            TextFormField(
+              enabled: false,
+              decoration: InputDecoration(
+                isDense: false,
+              ),
+              controller: _AddressBasicController,
+              style: TextStyle(fontSize: 20),
             ),
+            const Padding(padding: EdgeInsets.only(top: 20)),
+            const Padding(padding: EdgeInsets.only(top: 20)),
+            const Text('상세주소',
+                style: TextStyle(fontSize: 15, color: Colors.blueGrey)),
+            TextFormField(
+              enabled: false,
+              decoration: InputDecoration(
+                isDense: false,
+              ),
+              controller: _AddressDetailThreeController,
+              style: TextStyle(fontSize: 20),
+            ),
+            const Padding(padding: EdgeInsets.only(top: 200)),
+            const Text("아래 FloatingButton 을 눌러 주소를 검색하세요. ⬇️⬇️⬇️",
+                style: TextStyle(fontSize: 15, color: Colors.blueGrey)),
+
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        tooltip: '주소찾기',
+        child: const Icon(Icons.search),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
+
