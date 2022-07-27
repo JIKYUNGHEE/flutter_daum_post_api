@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:js' as js;
 import 'dart:html' as html;
 
@@ -93,7 +94,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
       // html.window.open(uri.path, "주소 찾기");
 
-    } else {
+    }
+
+    if(Platform.isAndroid || Platform.isIOS) {
       //remedi_kopo 플러그인이 ANDROID 와 IOS 만 지원
       print("📗, Platform is not web");
       KopoModel model = await Navigator.push(
