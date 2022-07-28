@@ -37,10 +37,6 @@ dependencies:
 
   remedi_kopo: ^0.0.1
 
-  js: ^0.6.4
-
-  http: ^0.13.4
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

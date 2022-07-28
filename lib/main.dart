@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:js' as js;
 import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
@@ -9,10 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:remedi_kopo/remedi_kopo.dart';
-
-import 'package:http/http.dart' as http;
-
-import 'package:flutter_daum_post_api/messageHandler.dart';
 
 void main() {
   runApp(const MyApp());
@@ -63,57 +58,61 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController _addressZoneCodeController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _addressBasicController = TextEditingController();
   final TextEditingController _addressDetailThreeController =
-      TextEditingController();
+  TextEditingController();
 
   void _searchAddress() async {
-    if (kIsWeb) {
-      print("📗, Platform is web");
+    try {
+      if (kIsWeb) {
+        print("📗, Platform is web");
 
-      //[로컬 html 파일 이용 방법]
-      String htmlFilePath = 'assets/kakao_postcode.html';
-      String fileHtmlContents = await rootBundle.loadString(htmlFilePath);
-      // print("📗, fileHtmlContents is ${fileHtmlContents}");
+        var popup = html.window.open(
+            "https://jikyunghee.github.io/search_address_html/kakao_postcode_opener",
+            "주소 찾기",
+            "width = 500, height = 500, top = 100, left = 200, location = no");
 
-      Uri uri = Uri.dataFromString(fileHtmlContents,
-          mimeType: 'text/html', encoding: Encoding.getByName('utf-8'));
+        html.window.onMessage.listen((event) {
+          print("메세지 받았다! ---------- onMessage");
+          var data = (event as html.MessageEvent).data;
+          print(data);
 
-      print("📗, [uri] path is ${uri.path}, ${uri.origin}");
+          Map<String, dynamic> addressInfo = jsonDecode(data);
+          print('우편번호: ' + addressInfo["zonecode"]);
+          print('기본주소: ' + addressInfo["address"]);
 
-      //js.context.callMethod("write", [uri.data]);
+          popup.close();
 
-      js.context.callMethod('open', [
-        // uri.path,  //TODO.
-        "http://plinic.cafe24app.com/api/daumFlutterPost",
-        //TODO. (alt1) 로컬에 있는 html 파일 불러와야 함!!!! > 여기 코드에는 onComplete(JSON.stringify(data)); 가 없으므로 (alt2) 서버 호스팅 요청
-        "주소 검색",
-        "width = 500, height = 500, top = 100, left = 200, location = no"
-      ]);
+          _addressZoneCodeController.text = addressInfo["zonecode"];
+          _addressBasicController.text = addressInfo["address"];
+          _addressDetailThreeController.text = '';
+        });
+      }
 
-      // html.window.open(uri.path, "주소 찾기");
+      if (Platform.isAndroid || Platform.isIOS) {
+        //remedi_kopo 플러그인이 ANDROID 와 IOS 만 지원
+        print("📗, Platform is not web");
+        KopoModel model = await Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => RemediKopo(),
+          ),
+        );
 
-    }
-
-    if(Platform.isAndroid || Platform.isIOS) {
-      //remedi_kopo 플러그인이 ANDROID 와 IOS 만 지원
-      print("📗, Platform is not web");
-      KopoModel model = await Navigator.push(
-        context,
-        CupertinoPageRoute(
-          builder: (context) => RemediKopo(),
-        ),
-      );
-
-      _addressZoneCodeController.text = model.zonecode!;
-      _addressBasicController.text = '${model.address} ${model.buildingName}';
-      _addressDetailThreeController.text = '';
+        _addressZoneCodeController.text = model.zonecode!;
+        _addressBasicController.text =
+        '${model.address} ${model.buildingName}';
+        _addressDetailThreeController.text = '';
+      }
+    } catch (e) {
+      print("error! ------- $e");
     }
   }
 
   @override
   Widget build(BuildContext context) {
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -195,4 +194,5 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
 }
